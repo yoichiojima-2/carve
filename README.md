@@ -23,10 +23,12 @@ pip install shardate
 
 - **Date-based reading**: Read data for specific dates, date ranges, or collections of dates
 - **End-of-month support**: Dedicated functionality for reading end-of-month data
+- **Partition discovery**: Find available partitions within a date range
+- **Latest partition**: Automatically find and read the most recent available data
+- **Missing partition handling**: Skip missing partitions gracefully with warnings
 - **Flexible partitioning**: Customizable partition format (defaults to `y=%Y/m=%m/d=%d`)
 - **PySpark integration**: Seamlessly works with existing PySpark workflows
 - **Type hints**: Full type annotation support for better development experience
-- **Well-tested**: Comprehensive test suite ensuring reliability
 
 ## Quick Start
 
@@ -51,6 +53,34 @@ df = reader.read_by_dates(target_dates)
 
 # Read only end-of-month data within a date range
 df = reader.read_eoms_between(date(2025, 1, 1), date(2025, 3, 31))
+```
+
+### Handling Missing Partitions
+
+```python
+# Skip missing partitions instead of failing (useful for incomplete data)
+reader = Shardate("/path/to/data", skip_missing=True)
+
+# This will read available partitions and warn about missing ones
+df = reader.read_between(date(2025, 1, 1), date(2025, 1, 31))
+# Warning: Skipping 5 missing partitions: 2025-01-10 to 2025-01-14
+```
+
+### Partition Discovery
+
+```python
+# Find which dates have data (useful for debugging data gaps)
+reader = Shardate("/path/to/data")
+available = reader.list_available_dates(date(2025, 1, 1), date(2025, 1, 31))
+# [date(2025, 1, 1), date(2025, 1, 2), ..., date(2025, 1, 31)]
+```
+
+### Read Latest Available Data
+
+```python
+# Automatically find and read the most recent partition
+reader = Shardate("/path/to/data")
+df = reader.read_latest(lookback_days=30)  # Searches up to 30 days back
 ```
 
 ### Custom Partition Format
@@ -88,14 +118,19 @@ df.filter(df.column_name == "some_value").count()
 class Shardate:
     path: str
     partition_format: str = "y=%Y/m=%m/d=%d"
+    skip_missing: bool = False  # Skip missing partitions with warning
 ```
 
 #### Methods
 
-- `read_by_date(target_date: date) -> DataFrame`: Read data for a specific date
-- `read_between(start_date: date, end_date: date) -> DataFrame`: Read data between two dates (inclusive)  
-- `read_by_dates(target_dates: Iterable[date]) -> DataFrame`: Read data for specific dates
-- `read_eoms_between(start_date: date, end_date: date) -> DataFrame`: Read end-of-month data within a date range
+| Method | Description |
+|--------|-------------|
+| `read_by_date(target_date)` | Read data for a specific date |
+| `read_between(start_date, end_date)` | Read data between two dates (inclusive) |
+| `read_by_dates(target_dates)` | Read data for specific dates |
+| `read_eoms_between(start_date, end_date)` | Read end-of-month data within a date range |
+| `read_latest(lookback_days=30)` | Read the most recent available partition |
+| `list_available_dates(start_date, end_date)` | Discover which partitions exist in a range |
 
 ## Data Structure Requirements
 
