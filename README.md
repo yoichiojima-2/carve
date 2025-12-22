@@ -72,7 +72,7 @@ df = reader.read_between(date(2025, 1, 1), date(2025, 1, 31))
 # Find which dates have data (useful for debugging data gaps)
 reader = Shardate("/path/to/data")
 available = reader.list_available_dates(date(2025, 1, 1), date(2025, 1, 31))
-# [date(2025, 1, 1), date(2025, 1, 2), ..., date(2025, 1, 31)]
+# [date(2025, 1, 1), date(2025, 1, 2), date(2025, 1, 5), ...]  # Shows gaps
 ```
 
 ### Read Latest Available Data
