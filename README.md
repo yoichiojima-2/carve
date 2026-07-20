@@ -9,7 +9,7 @@
 
 A lightweight Python library for efficiently reading year-month-day partitioned Parquet datasets with PySpark.
 
-> **Status:** stable and feature-complete. The API is settled; maintenance releases as needed.
+> **Status:** small, focused utility. The API is settled; maintenance releases as needed.
 
 ## Installation
 
@@ -28,7 +28,7 @@ pip install shardate
 - **Flexible partitioning**: Customizable partition format (defaults to `y=%Y/m=%m/d=%d`)
 - **PySpark integration**: Seamlessly works with existing PySpark workflows
 - **Type hints**: Full type annotation support for better development experience
-- **Well-tested**: Comprehensive test suite ensuring reliability
+- **Tested**: mypy and pytest with coverage run in CI on every push
 
 ## Quick Start
 
