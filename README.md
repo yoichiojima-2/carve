@@ -9,6 +9,8 @@
 
 A lightweight Python library for efficiently reading year-month-day partitioned Parquet datasets with PySpark.
 
+> **Status:** stable and feature-complete. The API is settled; maintenance releases as needed.
+
 ## Installation
 
 ```bash
